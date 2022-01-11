@@ -27,6 +27,11 @@ public class TransactionService {
     }
 
     public void deleteTransactionById(String id){
-        transactionRepository.deleteById(id);
+        if(transactionRepository.existsById(id)){
+            transactionRepository.deleteById(id);
+        }else{
+            throw new TransactionNotFoundException();
+        }
+
     }
 }

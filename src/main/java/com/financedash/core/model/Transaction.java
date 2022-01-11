@@ -6,6 +6,7 @@ public class Transaction {
     @Id
     private String id;
 
+    private String description;
     private String userId;
     private double sum;
 
@@ -18,6 +19,21 @@ public class Transaction {
 
     public Transaction(String id, String userId, double sum) {
         this.id = id;
+        this.userId = userId;
+        this.sum = sum;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Transaction(String id, String description, String userId, double sum) {
+        this.id = id;
+        this.description = description;
         this.userId = userId;
         this.sum = sum;
     }
