@@ -17,8 +17,8 @@ public class Transaction {
         this.sum = sum;
     }
 
-    public Transaction(String id, String userId, double sum) {
-        this.id = id;
+    public Transaction(String description, String userId, double sum) {
+        this.description = description;
         this.userId = userId;
         this.sum = sum;
     }
@@ -37,6 +37,7 @@ public class Transaction {
         this.userId = userId;
         this.sum = sum;
     }
+
 
     public String getId() {
         return id;

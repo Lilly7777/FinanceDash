@@ -6,8 +6,10 @@ import com.financedash.core.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -31,7 +33,7 @@ public class TransactionController {
     }
 
     @GetMapping("/api/v1/transaction")
-    public ResponseEntity<List<Transaction>> getAllTransactions(@RequestParam String userId){
+    public ResponseEntity<List<Transaction>> getAllTransactions(@RequestParam String userId, @AuthenticationPrincipal Principal principal){
         return new ResponseEntity<>(transactionService.getAllTransactionByUserId(userId), HttpStatus.OK);
     }
 
