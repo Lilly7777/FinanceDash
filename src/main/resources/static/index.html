@@ -228,6 +228,7 @@
     <script src="assets/js/theme.js"></script>
     <!-- jQuery -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
     <!-- Popper JS -->
     <script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js'></script>
     <!-- Bootstrap JS -->
@@ -239,7 +240,8 @@
         var transaction_description = $("#newTransactionModal #new_transaction_desc").val();
         var transaction_sum = $("#newTransactionModal #new_transaction_sum").val();
         var token = $.cookie("ACCESS_TOKEN");
-        var user_id = [[${userId}]]
+        //var token = $.cookie("ACCESS_TOKEN");
+        var user_id = [[${email}]]
 
         var transaction_data = {
             "description": transaction_description,
@@ -249,12 +251,12 @@
 
         if(transaction_description && transaction_sum){
             $.ajax({
-                url: "api/v1/transaction",
-                headers: { 'Authorization': 'Bearer ' + token },
+                url: "http://localhost:81/api/v1/transaction",
+                headers: [{ 'Authorization': 'Bearer ' + token }, { 'Access-Control-Allow-Origin': '*' }, {'Content-Type': 'application/json'}],
                 type: "POST",
-                //add cookie to auth header
-                data: JSON.stringify({transaction_data}),
+                data: JSON.stringify({"description": transaction_description, "sum": transaction_sum, "userId": user_id}),
                 dataType: 'json',
+                contentType: "application/json",
                 success: function (data) {
                     $("#newTransactionModal #new_transaction_desc").val("");
                     $("#newTransactionModal #new_transaction_sum").val("");
