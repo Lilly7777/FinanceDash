@@ -238,6 +238,7 @@
         // do something…
         var transaction_description = $("#newTransactionModal #new_transaction_desc").val();
         var transaction_sum = $("#newTransactionModal #new_transaction_sum").val();
+        var token = $.cookie("ACCESS_TOKEN");
         var user_id = [[${userId}]]
 
         var transaction_data = {
@@ -249,7 +250,9 @@
         if(transaction_description && transaction_sum){
             $.ajax({
                 url: "api/v1/transaction",
+                headers: { 'Authorization': 'Bearer ' + token },
                 type: "POST",
+                //add cookie to auth header
                 data: JSON.stringify({transaction_data}),
                 dataType: 'json',
                 success: function (data) {
