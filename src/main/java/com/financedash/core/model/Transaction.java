@@ -1,9 +1,6 @@
 package com.financedash.core.model;
 
-import org.springframework.data.annotation.Id;
-
 public class Transaction {
-    @Id
     private String id;
 
     private String description;
@@ -60,5 +57,15 @@ public class Transaction {
 
     public void setSum(double sum) {
         this.sum = sum;
+    }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "id='" + id + '\'' +
+                ", description='" + description + '\'' +
+                ", userId='" + userId + '\'' +
+                ", sum=" + sum +
+                '}';
     }
 }
