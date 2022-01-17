@@ -1,6 +1,9 @@
 package com.financedash.core.controller;
 
+import com.financedash.core.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -10,16 +13,21 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Controller
 public class DashboardController {
+
+    @Value("${financedash.resource.server.uri}")
+    private String resourceServerUri;
 
     @Autowired
     OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
@@ -44,7 +52,23 @@ public class DashboardController {
     }
 
     @GetMapping("/transactions")
+    @SuppressWarnings("unchecked")
     public String table(Model model, OAuth2AuthenticationToken authentication) {
+        OAuth2AuthorizedClient client = oAuth2AuthorizedClientService
+                .loadAuthorizedClient(authentication.getAuthorizedClientRegistrationId(), authentication.getName());
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(client.getAccessToken().getTokenValue());
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<List<Transaction>> httpEntity = new HttpEntity<>(null, headers);
+
+        ResponseEntity<List> response = restTemplate.exchange(resourceServerUri + "/api/v1/transaction", HttpMethod.GET, httpEntity, List.class, Map.of("userId", "test"));
+        List<Transaction> transactions = response.getBody();
+        //List<Transaction> transactions = (List<Transaction>) restTemplate.getForObject(resourceServerUri + "", List.class);
+
+
         model.addAttribute("earnings", 0);
         model.addAttribute("given_name", authentication.getPrincipal().getAttributes().get("given_name"));
         model.addAttribute("family_name", authentication.getPrincipal().getAttributes().get("family_name"));
