@@ -34,3 +34,9 @@ build/
 
 ### Bootstrap Studi ###
 *.bsdesign
+
+### Self signed certificates ###
+*.p12
+*.jks
+.keystore
+keystore

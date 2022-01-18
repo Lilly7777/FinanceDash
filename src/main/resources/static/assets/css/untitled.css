@@ -1,0 +1,12 @@
+.text-primary {
+  /*color: color: rgba(var(--bs-primary-rgb), var(--bs-text-opacity)) !important;*/
+  color: #1abe83!important;
+  --bs-text-opacity: 1;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #1abe83!important;
+  border-color: #1abe83!important;
+}
+
