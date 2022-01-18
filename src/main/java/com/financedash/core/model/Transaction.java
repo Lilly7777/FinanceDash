@@ -6,6 +6,7 @@ public class Transaction {
     private String description;
     private String userId;
     private double sum;
+    private String date;
 
     public Transaction(){}
 
@@ -28,11 +29,12 @@ public class Transaction {
         this.description = description;
     }
 
-    public Transaction(String id, String description, String userId, double sum) {
+    public Transaction(String id, String description, String userId, double sum, String date) {
         this.id = id;
         this.description = description;
         this.userId = userId;
         this.sum = sum;
+        this.date = date;
     }
 
     public String getId() {
@@ -57,6 +59,14 @@ public class Transaction {
 
     public void setSum(double sum) {
         this.sum = sum;
+    }
+
+    public void setDate(String date){
+        this.date = date;
+    }
+
+    public String getDate(){
+        return date;
     }
 
     @Override

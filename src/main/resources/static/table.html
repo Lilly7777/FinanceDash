@@ -101,26 +101,23 @@
                                         <tr>
                                             <th>Date</th>
                                             <th>Sum</th>
-                                            <th>Category</th>
+                                            <th>Description</th>
                                             <th>TransactionID</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-<!--                                        <tr>-->
-<!--                                            <td>Test</td>-->
-<!--                                            <td>Test</td>-->
-<!--                                            <td>Test</td>-->
-<!--                                            <td>test</td>-->
-<!--                                        </tr>-->
-<!--                                        <tr></tr>-->
-<!--                                        <tr></tr>-->
-<!--                                        <tr></tr>-->
+                                        <tr th:each="transaction : ${transactions}">
+                                            <td th:text="${transaction.date}"></td>
+                                            <td th:text="${transaction.sum}"></td>
+                                            <td th:text="${transaction.description}"></td>
+                                            <td th:text="${transaction.id}"></td>
+                                        </tr>
                                     </tbody>
                                     <tfoot>
                                         <tr>
                                             <td><strong>Date</strong></td>
                                             <td><strong>Sum</strong></td>
-                                            <td><strong>Category</strong></td>
+                                            <td><strong>Description</strong></td>
                                             <td><strong>TransactionID</strong></td>
                                             <td></td>
                                         </tr>
