@@ -1,4 +1,4 @@
-package com.financedash.resourceserver.model;
+package com.financedash.core.model;
 
 public class ExtendedTransaction {
 
