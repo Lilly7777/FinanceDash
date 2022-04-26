@@ -8,11 +8,20 @@ public class Transaction {
     private double sum;
     private String date;
 
-    public Transaction(){}
+    private String categoryId = null;
 
-    public Transaction(String userId, double sum){
+    public Transaction() {
+    }
+
+    public Transaction(String userId, double sum) {
         this.userId = userId;
         this.sum = sum;
+    }
+
+    public Transaction(String userId, double sum, String categoryId) {
+        this.userId = userId;
+        this.sum = sum;
+        this.categoryId = categoryId;
     }
 
     public Transaction(String id, String userId, double sum) {
@@ -61,21 +70,19 @@ public class Transaction {
         this.sum = sum;
     }
 
-    public void setDate(String date){
+    public void setDate(String date) {
         this.date = date;
     }
 
-    public String getDate(){
+    public String getDate() {
         return date;
     }
 
-    @Override
-    public String toString() {
-        return "Transaction{" +
-                "id='" + id + '\'' +
-                ", description='" + description + '\'' +
-                ", userId='" + userId + '\'' +
-                ", sum=" + sum +
-                '}';
+    public String getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
     }
 }

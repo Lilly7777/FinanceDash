@@ -103,6 +103,7 @@
                                             <th>Sum</th>
                                             <th>Description</th>
                                             <th>TransactionID</th>
+                                            <th>Category</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -111,6 +112,7 @@
                                             <td th:text="${transaction.sum}"></td>
                                             <td th:text="${transaction.description}"></td>
                                             <td th:text="${transaction.id}"></td>
+                                            <td th:text="General"></td>
                                         </tr>
                                     </tbody>
                                     <tfoot>
@@ -119,7 +121,7 @@
                                             <td><strong>Sum</strong></td>
                                             <td><strong>Description</strong></td>
                                             <td><strong>TransactionID</strong></td>
-                                            <td></td>
+                                            <th><strong>Category</strong></th>
                                         </tr>
                                     </tfoot>
                                 </table>

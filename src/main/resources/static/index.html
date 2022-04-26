@@ -213,6 +213,13 @@
                             <div class="form-group">
                                 <input type="text" class="form-control" id="new_transaction_sum" placeholder="Enter sum">
                             </div>
+                            <div class="form-group">
+                                <label for="new_transaction_category">Choose a category:</label>
+                                <select th:field="*{categories}" class="form-control" id="new_transaction_category">
+                                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.categoryName}">
+                                    </option>
+                                </select>
+                                </div>
                             <button type="button" data-dismiss="modal" class="btn btn-primary btn-sm d-none d-sm-inline-block">Add</button>
                         </form>
                         </div>
@@ -249,7 +256,7 @@
             "userId": user_id
         };
 
-        if(transaction_description && transaction_sum){
+        if(transaction_description && (transaction_sum && transaction_sum > 0)) {
             $.ajax({
                 url: "http://localhost:81/api/v1/transaction",
                 headers: [{ 'Authorization': 'Bearer ' + token }, { 'Access-Control-Allow-Origin': '*' }, {'Content-Type': 'application/json'}],

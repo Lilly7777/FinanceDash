@@ -1,5 +1,7 @@
 package com.financedash.core.controller;
 
+import com.financedash.core.model.Category;
+import com.financedash.core.model.ExtendedTransaction;
 import com.financedash.core.model.Transaction;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,20 @@ public class DashboardController {
         email = StringUtils.replace(email, "\"]", "");
         model.addAttribute("email", email);
 
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(client.getAccessToken().getTokenValue());
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<List<String>> categoryHttpEntity = new HttpEntity<>(null, headers);
+
+        ResponseEntity<List> categoryResponse = restTemplate.exchange(resourceServerUri + "/api/v1/categories", HttpMethod.GET, categoryHttpEntity, List.class);
+        List<String> categories = categoryResponse.getBody();
+
+        System.out.println(categories);
+
+        model.addAttribute("categories", categories);
+
 
         return "index";
     }
@@ -66,12 +82,13 @@ public class DashboardController {
         headers.setBearerAuth(client.getAccessToken().getTokenValue());
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<List<Transaction>> httpEntity = new HttpEntity<>(null, headers);
+        HttpEntity<List<ExtendedTransaction>> httpEntity = new HttpEntity<>(null, headers);
 
-        ResponseEntity<List> response = restTemplate.exchange(resourceServerUri + "/api/v1/transaction?userId={name}", HttpMethod.GET, httpEntity, List.class, email);
-        List<Transaction> transactions = response.getBody();
+        ResponseEntity<List> response = restTemplate.exchange(resourceServerUri + "/api/v1/transaction?userId={name}?output=extended", HttpMethod.GET, httpEntity, List.class, email);
+        List<ExtendedTransaction> transactions = response.getBody();
 
-        //List<Transaction> transactions = (List<Transaction>) restTemplate.getForObject(resourceServerUri + "", List.class);
+        System.out.println(transactions);
+
 
 
         model.addAttribute("earnings", 0);
