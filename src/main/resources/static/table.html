@@ -108,11 +108,11 @@
                                     </thead>
                                     <tbody>
                                         <tr th:each="transaction : ${transactions}">
-                                            <td> - </td>
+                                            <td th:text="${transaction.date}"></td>
                                             <td th:text="${transaction.sum}"></td>
                                             <td th:text="${transaction.description}"></td>
                                             <td th:text="${transaction.id}"></td>
-                                            <td th:text="General"></td>
+                                            <td th:text="${transaction.categoryName}"></td>
                                         </tr>
                                     </tbody>
                                     <tfoot>

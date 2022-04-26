@@ -1,5 +1,8 @@
 package com.financedash.core.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.financedash.core.model.Category;
 import com.financedash.core.model.ExtendedTransaction;
 import com.financedash.core.model.Transaction;
@@ -18,8 +21,12 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 @CrossOrigin(origins = "*")
 @Controller
@@ -32,7 +39,7 @@ public class DashboardController {
     OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
 
     @GetMapping("/")
-    public String index(Model model, OAuth2AuthenticationToken authentication, HttpServletResponse response) {
+    public String index(Model model, OAuth2AuthenticationToken authentication, HttpServletResponse response) throws JsonProcessingException {
 
         OAuth2AuthorizedClient client = oAuth2AuthorizedClientService
                 .loadAuthorizedClient(authentication.getAuthorizedClientRegistrationId(), authentication.getName());
@@ -40,7 +47,6 @@ public class DashboardController {
         response.addCookie(new Cookie("ACCESS_TOKEN", client.getAccessToken().getTokenValue()));
 
         model.addAttribute("earnings", 0);
-        model.addAttribute("expenses", 0);
         model.addAttribute("tasks_percentage", 0);
         model.addAttribute("tasks_count", 0);
         model.addAttribute("given_name", authentication.getPrincipal().getAttributes().get("given_name"));
@@ -59,11 +65,14 @@ public class DashboardController {
         ResponseEntity<List> categoryResponse = restTemplate.exchange(resourceServerUri + "/api/v1/categories", HttpMethod.GET, categoryHttpEntity, List.class);
         List<String> categories = categoryResponse.getBody();
 
-        System.out.println(categories);
-
         model.addAttribute("categories", categories);
 
-
+        List<ExtendedTransaction> transactions = getAllUserTransactions(email, client.getAccessToken().getTokenValue());
+        AtomicReference<Double> totalExpenses = new AtomicReference<>(0d);
+        for(ExtendedTransaction transaction : transactions) {
+            totalExpenses.set(totalExpenses.get() + (transaction.getSum()));
+        }
+        model.addAttribute("expenses", totalExpenses.get());
         return "index";
     }
 
@@ -77,19 +86,7 @@ public class DashboardController {
         email = StringUtils.replace(email, "\"]", "");
         model.addAttribute("email", email);
 
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(client.getAccessToken().getTokenValue());
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<List<ExtendedTransaction>> httpEntity = new HttpEntity<>(null, headers);
-
-        ResponseEntity<List> response = restTemplate.exchange(resourceServerUri + "/api/v1/transaction?userId={name}?output=extended", HttpMethod.GET, httpEntity, List.class, email);
-        List<ExtendedTransaction> transactions = response.getBody();
-
-        System.out.println(transactions);
-
-
+        List<ExtendedTransaction> transactions = getAllUserTransactions(email, client.getAccessToken().getTokenValue());
 
         model.addAttribute("earnings", 0);
         model.addAttribute("given_name", authentication.getPrincipal().getAttributes().get("given_name"));
@@ -108,5 +105,25 @@ public class DashboardController {
         email = StringUtils.replace(email, "\"]", "");
         model.addAttribute("email", email);
         return "profile";
+    }
+
+
+    private List<ExtendedTransaction> getAllUserTransactions(String email, String accessToken) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(accessToken);
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            HttpEntity<List<ExtendedTransaction>> httpEntity = new HttpEntity<>(null, headers);
+
+            ResponseEntity<List> response = restTemplate.exchange(resourceServerUri + "/api/v1/transaction?userId={name}&output=extended", HttpMethod.GET, httpEntity, List.class, email);
+            return objectMapper.readValue(objectMapper.writeValueAsString(response.getBody()), new TypeReference<List<ExtendedTransaction>>() {
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

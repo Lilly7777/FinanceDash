@@ -246,6 +246,7 @@
         // do something…
         var transaction_description = $("#newTransactionModal #new_transaction_desc").val();
         var transaction_sum = $("#newTransactionModal #new_transaction_sum").val();
+        var transaction_category = $("#newTransactionModal #new_transaction_category").val();
         var token = $.cookie("ACCESS_TOKEN");
         //var token = $.cookie("ACCESS_TOKEN");
         var user_id = [[${email}]]
@@ -261,12 +262,13 @@
                 url: "http://localhost:81/api/v1/transaction",
                 headers: [{ 'Authorization': 'Bearer ' + token }, { 'Access-Control-Allow-Origin': '*' }, {'Content-Type': 'application/json'}],
                 type: "POST",
-                data: JSON.stringify({"description": transaction_description, "sum": transaction_sum, "userId": user_id}),
+                data: JSON.stringify({"description": transaction_description, "sum": transaction_sum, "userId": user_id, "categoryId": transaction_category}),
                 dataType: 'json',
                 contentType: "application/json",
                 success: function (data) {
                     $("#newTransactionModal #new_transaction_desc").val("");
                     $("#newTransactionModal #new_transaction_sum").val("");
+                    $("#newTransactionModal #new_transaction_category").val("");
                     $("#newTransactionModal").modal('hide');
                     location.reload();
                 },
